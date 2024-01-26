@@ -1,10 +1,13 @@
 "use client";
 import Image from "next/image";
 import Todo from "@/components/Todo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 export default function Home() {
   const initial = { title: "", description: "" };
   const [inputs, setInputs] = useState(initial);
+  const [todos, setTodos] = useState([]);
 
   const handler = (e, input) => {
     setInputs({ ...inputs, [input]: e.target.value });
@@ -12,12 +15,34 @@ export default function Home() {
 
   const submit = async (e) => {
     e.preventDefault();
+    console.log(inputs, "******");
     try {
-      console.log("Hello");
+      const response = await axios.post("/api", inputs);
+      toast.success(response?.data?.msg);
+      formReset();
+      FetchTodos();
+    } catch (error) {
+      console.log(error);
+      toast.error("Error Occurred in Todo Creation");
+    }
+  };
+
+  const formReset = () => {
+    setInputs(initial);
+  };
+
+  const FetchTodos = async () => {
+    try {
+      const response = await axios.get("/api");
+      setTodos(response.data.todos);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    FetchTodos();
+  }, []);
   return (
     <>
       <section className="w-full md:w-[70%] py-24 px-2 mx-auto shadow-md">
@@ -60,7 +85,10 @@ export default function Home() {
               </tr>
             </thead>
             <tbody className="border border-black text-center">
-              <Todo />
+              {todos.length > 0 &&
+                todos.map((item, index) => {
+                  return <Todo item={item} />;
+                })}
             </tbody>
           </table>
         </div>
