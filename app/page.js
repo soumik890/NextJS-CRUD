@@ -40,6 +40,42 @@ export default function Home() {
     }
   };
 
+  const remove = async (id) => {
+    try {
+      console.log(id);
+      const response = await axios.delete("/api", {
+        params: {
+          id: id,
+        },
+      });
+      // console.log(response);
+      FetchTodos();
+      toast.success(response?.data?.msg);
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+  const complete = async (id) => {
+    console.log(id, "^&^&^&^&^&^^");
+    try {
+      console.log(id);
+      const response = await axios.put(
+        "/api",
+        {},
+        {
+          params: {
+            id: id,
+          },
+        }
+      );
+      console.log(response);
+      FetchTodos();
+      toast.success(response?.data?.msg);
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
   useEffect(() => {
     FetchTodos();
   }, []);
@@ -87,7 +123,7 @@ export default function Home() {
             <tbody className="border border-black text-center">
               {todos.length > 0 &&
                 todos.map((item, index) => {
-                  return <Todo item={item} />;
+                  return <Todo item={item} del={remove} complete={complete} />;
                 })}
             </tbody>
           </table>

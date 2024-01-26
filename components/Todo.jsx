@@ -1,6 +1,6 @@
 import React from "react";
 
-const Todo = ({ item }) => {
+const Todo = ({ item, del, complete }) => {
   return (
     <>
       <tr>
@@ -8,18 +8,24 @@ const Todo = ({ item }) => {
         <td>{item.title}</td>
         <td>{item.description}</td>
         <td>{item?.isComplete ? "completed" : "pending"}</td>
-        <td >
+        <td>
           <div className=" flex gap-3 justify-center">
-            <button className="bg-black text-white p-2 hover:bg-purple-600 duration-300 transition-all">
+            <button
+              className="bg-black text-white p-2 hover:bg-purple-600 duration-300 transition-all"
+              onClick={() => del(item._id)}
+            >
               Delete
             </button>
-
-            <button className="bg-black text-white p-2 hover:bg-purple-600 duration-300 transition-all">
-              Update
-            </button>
-            <button className="bg-black text-white p-2 hover:bg-purple-600 duration-300 transition-all">
-              Mark Complete
-            </button>
+            {!item?.isComplete ? (
+              <button
+                className="bg-green-600 text-white p-2 hover:bg-purple-600 duration-300 transition-all"
+                onClick={() => complete(item._id)}
+              >
+                Mark Complete
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
         </td>
       </tr>
